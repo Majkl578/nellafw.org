@@ -40,7 +40,7 @@ Ekvivalent při použití `Nella\Object`:
 /**
  * @property string $bar
  */
-class FooEntity extends \Nette\Object
+class FooEntity extends \Nella\Object
 {
 	/** @var string */
 	private $bar;
@@ -133,7 +133,7 @@ Hodnota předávaná *setteru* je podle annotace také **automaticky validována
  * @property-write FooEntity[]|array $arrObj
  * @property-write FooEntity|NULL $empty
  */
-class FooEntity
+class FooEntity extends \Nella\Object
 {
 	/** @var FooEntity */
 	private $obj;
