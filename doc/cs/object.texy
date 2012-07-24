@@ -27,7 +27,7 @@ class FooEntity extends \Nette\Object
 	public function setBar($bar)
 	{
 		$this->bar = $bar;
-		return $this->bar;
+		return $this;
 	}
 }
 \--
