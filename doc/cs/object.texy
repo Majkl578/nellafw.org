@@ -1,0 +1,168 @@
+`Nella\Object`
+***********
+
+.[perex]
+Rozšiřuje `Nette\Object` o automatické gettery a settery.
+
+Mějme například entitu:
+
+/--php
+class FooEntity extends \Nette\Object
+{
+	/** @var string */
+	private $bar;
+
+	/**
+	 * @return string
+	 */
+	public function getBar()
+	{
+		return $bar;
+	}
+
+	/**
+	 * @param string
+	 * @return FooEntity
+	 */
+	public function setBar($bar)
+	{
+		$this->bar = $bar;
+		return $this->bar;
+	}
+}
+\--
+
+Pokud budeme dědit můsíme napsat spoustu "zbytečného kódu". Tímto zbytečným kódem jsou "prázdné" *settery* a *gettery*. Díky `Nella\Object` je již nebudeme muset psát.
+
+Ekvivalent při použití `Nella\Object`:
+
+/--php
+/**
+ * @property string $bar
+ */
+class FooEntity extends \Nette\Object
+{
+	/** @var string */
+	private $bar;
+}
+\--
+
+`Nella\Object` podporuje standartní zápis `@property`, `@property-read` (pouze getter), `@property-write` (pouze setter).
+
+Podrobnosti
+===========
+
+U víše uvedeného příkladu máme automaticky k dispozici gettery a settery viz ukázka:
+
+/--php
+/**
+ * @property string $bar
+ */
+class FooEntity extends \Nella\Object
+{
+	/** @var string */
+	private $bar;
+}
+
+$test = new FooEntity;
+$test->bar = 'test';
+dump($test->bar); // 'test' (string)
+$test->setBar('Lorem ipsum');
+dump($test->getBar()); // 'Lorem ipsum' (string)
+\--
+
+Přetěžování
+===========
+
+Pokud definujeme vlastní getter nebo setter automaticky bude upřednostněn.
+
+/--php
+/**
+ * @property string $foo
+ * @property string|NULL $bar
+ */
+class Test extends \Nella\Object
+{
+	/** @var string */
+	private $foo;
+	/** @var string */
+	private $bar;
+
+	/**
+	 * @return string
+	 */
+	public function getFoo()
+	{
+		return 'test';
+	}
+
+	/**
+	 * @param string|NULL
+	 * @return Test
+	 */
+	public function setBar($bar)
+	{
+		if (empty($bar)) {
+			$this->bar = NULL;
+		} else {
+			$this->bar = $bar . ' test';
+		}
+		return $this;
+	}
+}
+
+$test = new Test;
+$test->foo = 'Lorem ipsum';
+dump($test->foo); // 'test' (string)
+$test->setBar('Lorem ipsum');
+dump($test->getBar()); // 'Lorem ipsum test' (string)
+$test->bar = NULL;
+dump($test->bar); // NULL
+\--
+
+Validace a čištění
+==================
+
+Hodnota předávaná *setteru* je podle annotace také **automaticky validována** a prázdný string je automaticky převeden na `NULL`.
+
+/--php
+/**
+ * @property string|NULL $foo
+ * @property FooEntity $obj
+ * @property array $arr
+ * @property-write FooEntity[]|array $arrObj
+ * @property-write FooEntity|NULL $empty
+ */
+class FooEntity
+{
+	/** @var FooEntity */
+	private $obj;
+	/** @var array */
+	private $arr;
+	/** @var FooEntity[]|array */
+	private $arrObj;
+	/** @var FooEntity|NULL */
+	private $empty;
+}
+
+$test = new FooEntity;
+
+$test->foo = '';
+dump($test->foo); // NULL
+
+$test->obj = new FooEntity; // OK
+$test->obj = NULL; // Fatal Error
+$test->obj = 'test'; // Fatal Error
+$test->arr = array('test'); // OK
+$test->arr = array(); // OK
+$test->arr = NULL; // Fatal Error
+$test->arr = 'test'; // Fatal Error
+$test->arrObj = array(new FooEntity); // OK
+$test->arrObj = array('test'); // OK
+$test->arrObj = array(); // OK
+$test->arrObj = NULL; // Fatal Error
+$test->arrObj = 'test'; // Fatal Error
+$test->empty = new FooEntity; // OK
+$test->empty = NULL; // OK
+$test->empty = 'test'; // Fatal Error
+\--
