@@ -32,7 +32,7 @@ class FooEntity extends \Nette\Object
 }
 \--
 
-Pokud budeme dědit můsíme napsat spoustu "zbytečného kódu". Tímto zbytečným kódem jsou "prázdné" *settery* a *gettery*. Díky `Nella\Object` je již nebudeme muset psát.
+Pokud budeme dědit, musíme napsat spoustu "zbytečného kódu". Tímto zbytečným kódem jsou "prázdné" *settery* a *gettery*. Díky `Nella\Object` je již nebudeme muset psát.
 
 Ekvivalent při použití `Nella\Object`:
 
@@ -47,12 +47,12 @@ class FooEntity extends \Nella\Object
 }
 \--
 
-`Nella\Object` podporuje standartní zápis `@property`, `@property-read` (pouze getter), `@property-write` (pouze setter).
+`Nella\Object` podporuje standardní zápis `@property`, `@property-read` (pouze getter) a `@property-write` (pouze setter).
 
 Podrobnosti
 ===========
 
-U víše uvedeného příkladu máme automaticky k dispozici gettery a settery viz ukázka:
+U výše uvedeného příkladu máme automaticky k dispozici gettery a settery, viz ukázka:
 
 /--php
 /**
@@ -74,7 +74,7 @@ dump($test->getBar()); // 'Lorem ipsum' (string)
 Přetěžování
 ===========
 
-Pokud definujeme vlastní getter nebo setter automaticky bude upřednostněn.
+Pokud definujeme vlastní getter nebo setter, automaticky bude upřednostněn.
 
 /--php
 /**
@@ -123,7 +123,7 @@ dump($test->bar); // NULL
 Validace a čištění
 ==================
 
-Hodnota předávaná *setteru* je podle annotace také **automaticky validována** a prázdný string je automaticky převeden na `NULL`.
+Hodnota předávaná *setteru* je podle anotace také **automaticky validována** a prázdný string je automaticky převeden na `NULL`.
 
 /--php
 /**
